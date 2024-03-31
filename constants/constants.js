@@ -1,8 +1,8 @@
-const IMAGE_FOLDER = "./images";
-const PYTHON_FOLDER_IMAGE = "./python-script/imageClassify.py"
-const MODEL_SOURCE = "./python-script/best.pt"
+const IMAGE_FILE = "./images";
+const PYTHON_FILE = "./python-script/imageClassify.py"
+const MODEL = "./python-script/best.pt"
 module.exports = {
-    IMAGE_FOLDER,
-    PYTHON_FOLDER_IMAGE,
-    MODEL_SOURCE
+    IMAGE_FILE,
+    PYTHON_FILE,
+    MODEL
 }

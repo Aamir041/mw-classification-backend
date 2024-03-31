@@ -1,23 +1,34 @@
 const express = require("express");
-const spawner = require("child_process").spawn;
+const {spawn:spawner} = require("child_process");
 const {v4:uuid4} = require("uuid");
 const multer = require("multer");
 
-const {IMAGE_FOLDER,PYTHON_FOLDER_IMAGE,MODEL_SOURCE } = require("../../constants/constants");
+const {
+    IMAGE_FILE,
+    PYTHON_FILE,
+    MODEL
+} = require("../../constants/constants");
 
 const router = express.Router()
 
+let fileName; // stores uploaded file name
+
+// configs for saving the file
 const storage = multer.diskStorage(
     {
+        // sets the destination in which file is gonna be uploaded
         destination: function(req,file,callback) {
             return callback(null,"./images");
         },
         filename: function(req, file, callback){
-            const fileName = file.originalname;
-            const dotIndex = fileName.indexOf(".");
-            const raw_file = fileName.substring(0,dotIndex);
-            const fileType = fileName.substring(dotIndex+1,fileName.length)
+            // Get file name, its type add uuid to and set the file name in global variable
+            fileName = null;
+            const file_name = file.originalname;
+            const dotIndex = file_name.indexOf(".");
+            const raw_file = file_name.substring(0,dotIndex);
+            const fileType = file_name.substring(dotIndex+1,file_name.length)
             const uploadFileName = `${raw_file}_${uuid4()}.${fileType}`
+            fileName = uploadFileName; 
             return callback(null,uploadFileName)
         }
     }
@@ -25,22 +36,22 @@ const storage = multer.diskStorage(
 
 const upload = multer({storage})
 
-router.get("/image",async (req,res) => {
-    const python_process = spawner("python",[`${PYTHON_FOLDER_IMAGE}`,`${MODEL_SOURCE}`,`${IMAGE_FOLDER}/image5.jpg`])
+router.post("/image",upload.single('file'),async (req,res) => {
+    // runs python script
+    const python_process = spawner("python",[`${PYTHON_FILE}`,`${MODEL}`,`${IMAGE_FILE}/${fileName}`])
 
     let result;
+    // fetches data from python script
     python_process.stdout.on('data',(data)=>{
         result = JSON.parse(data.toString());
         console.log("[ output from script ] :: ",JSON.parse(data.toString()))
     })
-
+    
+    // send the data fetched from python script  
     python_process.on('close',() => {
         res.send(result);
     })
-})
-
-router.post("/upload",upload.single('file'),async (req,res) => {
-    return res.status(200).send({message:"uploaded"});
+    fileName = null;
 })
 
 module.exports = router;

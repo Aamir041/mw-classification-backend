@@ -36,6 +36,27 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage })
 
+/**
+ * @swagger
+ * /classify/image:
+ *  post:
+ *      responses:
+ *          200:
+ *              description: Successful classification
+ *              content:
+ *                  application/json:
+ *                      example:
+ *                          result: [...]
+ *                          status: "ok"
+ *          400:
+ *              description: When an error occurs while execution python script
+ *              content:
+ *                  application/json:
+ *                      example:
+ *                          result: "An error occured while classifying!"
+ *                          status: "error"
+ */
+
 router.post("/image", upload.single('file'), async (req, res) => {
 
     console.log("Starting ....")

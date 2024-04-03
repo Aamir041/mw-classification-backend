@@ -13,10 +13,11 @@ def classifyImage():
 
     result = results[0]
 
-    class_id = []
+    objects = []
     for box in result.boxes:
-      class_id.append(result.names[box.cls[0].item()])
-    return {"result" : class_id,"status":"ok"}
+      detected_object = {"item": result.names[box.cls[0].item()], "prob":round(box.conf[0].item(), 2)}
+      objects.append(detected_object)
+    return {"result" : objects,"status":"ok"}
   
   except:
     return {"result":"An error occured while classifying!","status":"error"}

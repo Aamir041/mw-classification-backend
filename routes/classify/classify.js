@@ -46,7 +46,7 @@ const upload = multer({ storage })
  *              content:
  *                  application/json:
  *                      example:
- *                          result: [...]
+ *                          result: [{"item":"medical_cap","prob":0.95}]
  *                          status: "ok"
  *          400:
  *              description: When an error occurs while execution python script

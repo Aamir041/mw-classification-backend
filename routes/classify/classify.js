@@ -2,6 +2,8 @@ const express = require("express");
 const { spawn: spawner } = require("child_process");
 const { v4: uuid4 } = require("uuid");
 const multer = require("multer");
+const dbConn = require("../../models/dbConn");
+const Waste = dbConn.waste;
 
 const {
     IMAGE_FILE,
@@ -59,6 +61,9 @@ const upload = multer({ storage })
 
 router.post("/image", upload.single('file'), async (req, res) => {
 
+    /**
+     *  Sends Image response and stores those response in postgres
+     */
     console.log("Starting ....")
 
     // runs python script
@@ -79,6 +84,22 @@ router.post("/image", upload.single('file'), async (req, res) => {
         }
         else{
             res.status(200).send(result);
+            result["result"].map((ele) => {
+                const waste = {
+                    waste_name: ele.item,
+                    date: new Date().toISOString(),
+                    possibility: ele.prob,
+                    hospital_id: 3, // TODO : Get hospital_id from request
+                }
+                Waste.create(waste)
+                        .then(() => {
+                            console.log("Saved to db!");
+                        })
+                        .catch((err) => {
+                            console.log("Error while saving to db");
+                        })
+                        
+            })
             console.log("Success ....")
         }
         console.log("Finished !");

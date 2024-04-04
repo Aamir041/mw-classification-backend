@@ -89,7 +89,7 @@ router.post("/image", upload.single('file'), async (req, res) => {
                     waste_name: ele.item,
                     date: new Date().toISOString(),
                     possibility: ele.prob,
-                    hospital_id: 3, // TODO : Get hospital_id from request
+                    hospital_id: 1, // TODO : Get hospital_id from request
                 }
                 Waste.create(waste)
                         .then(() => {

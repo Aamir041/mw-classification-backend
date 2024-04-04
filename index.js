@@ -4,7 +4,7 @@ const classify = require("./routes/classify/classify");
 const cors = require("cors");
 const swaggerJSDOc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-const swaggerOptions = require("./swagger-config/swaggerConfig");
+const swaggerOptions = require("./configs/swaggerConfig");
 const swaggerSpec = swaggerJSDOc(swaggerOptions)
 
 app.use(cors())

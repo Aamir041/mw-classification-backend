@@ -1,0 +1,37 @@
+const express = require("express");
+const router = express.Router();
+
+const db = require("../../models/dbConn");
+const Hospital = db.hospital;
+
+router.post("/hospital", async (req, res) => {
+
+    const { name } = req.body
+
+    const hospital_details = {
+        hospital_name: name
+    }
+
+    const isHospitalPresent = await Hospital.count({
+        where: {
+            hospital_name: name
+        }
+    })
+
+    if (isHospitalPresent > 0) {
+        const hospitalExistRes = {
+            message: "Hospital name already exists!",
+            status: "error"
+        }
+        res.status(400).send(hospitalExistRes)
+    }
+    else {
+        const createHospital =  await Hospital.create(hospital_details);
+        console.log(createHospital)
+        res.status(200).send(createHospital);
+    }
+
+})
+
+
+module.exports = router;

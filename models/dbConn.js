@@ -18,6 +18,8 @@ db.sequelize = sequelize;
 
 db.hospital = require("./hospital.model")(sequelize,Sequelize);
 db.waste = require("./waste.model")(sequelize,Sequelize);
+db.user = require("./user.model")(sequelize,Sequelize);
+
 
 module.exports = db;
 

@@ -11,7 +11,7 @@ const options = {
             }
         ]
     },
-    apis: ["./index.js","./routes/*/*.js"]
+    apis: ["./index.js","./routes/*.js"]
 }
 
 module.exports = options;

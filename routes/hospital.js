@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const db = require("../../models/dbConn");
+const db = require("../models/dbConn");
 const Hospital = db.hospital;
 
-router.post("/hospital", async (req, res) => {
+router.post("/create", async (req, res) => {
 
     const { name } = req.body
 
@@ -32,6 +32,5 @@ router.post("/hospital", async (req, res) => {
     }
 
 })
-
 
 module.exports = router;

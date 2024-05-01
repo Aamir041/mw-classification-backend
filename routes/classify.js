@@ -2,14 +2,14 @@ const express = require("express");
 const { spawn: spawner } = require("child_process");
 const { v4: uuid4 } = require("uuid");
 const multer = require("multer");
-const dbConn = require("../../models/dbConn");
+const dbConn = require("../models/dbConn");
 const Waste = dbConn.waste;
 
 const {
     IMAGE_FILE,
     PYTHON_FILE,
     MODEL
-} = require("../../constants/constants");
+} = require("../constants/constants");
 
 const router = express.Router()
 
@@ -91,13 +91,13 @@ router.post("/image", upload.single('file'), async (req, res) => {
                     possibility: ele.prob,
                     hospital_id: 1, // TODO : Get hospital_id from request
                 }
-                Waste.create(waste)
-                        .then(() => {
-                            console.log("Saved to db!");
-                        })
-                        .catch((err) => {
-                            console.log("Error while saving to db");
-                        })
+                // Waste.create(waste)
+                //         .then(() => {
+                //             console.log("Saved to db!");
+                //         })
+                //         .catch((err) => {
+                //             console.log("Error while saving to db");
+                //         })
                         
             })
             console.log("Success ....")

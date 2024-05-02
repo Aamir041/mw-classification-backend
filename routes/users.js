@@ -13,7 +13,9 @@ const {
     SALT,
     HOSPITAL_DOES_NOT_EXISTS,
     USER_NOT_FOUND,
-    WRONG_PASSWORD
+    WRONG_PASSWORD,
+    USERNAME_CANNOT_BE_NULL,
+    PASSWORD_CANNOT_BE_NULL
 } = require("../constants/constants");
 
 router.post("/signup", async (req, res) => {
@@ -41,13 +43,13 @@ router.post("/signup", async (req, res) => {
     // if user exits with same username already then 
     if (user) {
         console.log("User already exists! : ", username);
-        res.status(400).json(USER_ALREADY_EXISTS);
+        res.status(400).send(USER_ALREADY_EXISTS);
     }
 
     // if hospital does not exists then send error message
     if (hospital == null) {
         console.log("Hospital does not exists!");
-        res.status(404).json(HOSPITAL_DOES_NOT_EXISTS)
+        res.status(404).send(HOSPITAL_DOES_NOT_EXISTS)
     }
 
     if (!user && hospital) {
@@ -80,25 +82,53 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
+    if(username == null){
+        res.status(400).send(USERNAME_CANNOT_BE_NULL);
+        return;
+    }
+    
+    if(password == null){
+        res.status(400).send(PASSWORD_CANNOT_BE_NULL);
+        return;
+    }
+
     console.log("Signing in...");
     // Get user
-    const user = await User.findOne(
-        {
-            where: {
-                username: username
+    let user ;
+    try{
+        user = await User.findOne(
+            {
+                where: {
+                    username: username
+                }
             }
-        }
-    );
+        );
+    }
+    catch(error){
+        console.log("Error while getting user");
+        res.status(500).send();
+        return;
+    }
 
     if (!user) {
         res.status(404).json(USER_NOT_FOUND);
+        return;
     }
 
     // compare user password
-    const doesPasswordMatches = await bcrypt.compare(password, user.password)
+    let doesPasswordMatches = false;
+    try{
+         doesPasswordMatches = await bcrypt.compare(password, user.password);
+    }
+    catch(error){
+        console.log("Error while checking password");
+        res.status(500).send();
+        return;
+    }
 
     if (!doesPasswordMatches) {
         res.status(401).json(WRONG_PASSWORD);
+        return;
     }
     else {
         const token = await getTokens(user);

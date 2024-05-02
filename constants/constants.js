@@ -18,6 +18,14 @@ const WRONG_PASSWORD = {
     message: "Wrong password",
     status: 401
 }
+const USERNAME_CANNOT_BE_NULL = {
+    message: "Username cannot be null",
+    status: 400
+}
+const PASSWORD_CANNOT_BE_NULL = {
+    message: "Password cannot be null",
+    status: 400
+}
 
 const SECRET_KEY = "mwappsecretkey";
 
@@ -30,5 +38,7 @@ module.exports = {
     HOSPITAL_DOES_NOT_EXISTS,
     USER_NOT_FOUND,
     WRONG_PASSWORD,
-    SECRET_KEY
+    SECRET_KEY,
+    USERNAME_CANNOT_BE_NULL,
+    PASSWORD_CANNOT_BE_NULL
 }

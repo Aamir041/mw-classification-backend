@@ -19,6 +19,8 @@ const WRONG_PASSWORD = {
     status: 401
 }
 
+const SECRET_KEY = "mwappsecretkey";
+
 module.exports = {
     IMAGE_FILE,
     PYTHON_FILE,
@@ -27,5 +29,6 @@ module.exports = {
     SALT,
     HOSPITAL_DOES_NOT_EXISTS,
     USER_NOT_FOUND,
-    WRONG_PASSWORD
+    WRONG_PASSWORD,
+    SECRET_KEY
 }

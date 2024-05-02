@@ -27,7 +27,7 @@ router.post("/create", async (req, res) => {
     }
     else {
         const createHospital =  await Hospital.create(hospital_details);
-        console.log(createHospital)
+        console.log("Hospital Created Successfully");
         res.status(200).send(createHospital);
     }
 

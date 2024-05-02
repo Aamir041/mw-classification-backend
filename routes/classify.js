@@ -10,7 +10,8 @@ const {
     PYTHON_FILE,
     MODEL
 } = require("../constants/constants");
-
+const passport = require("passport");
+const {getHospitalIdFromToken} = require("../utils/helpers")
 const router = express.Router()
 
 let fileName; // stores uploaded file name
@@ -59,12 +60,13 @@ const upload = multer({ storage })
  *                          status: "error"
  */
 
-router.post("/image", upload.single('file'), async (req, res) => {
-
+router.post("/image",passport.authenticate("jwt",{session:false}),upload.single('file'), async (req, res) => {
+    
     /**
      *  Sends Image response and stores those response in postgres
      */
     console.log("Starting ....")
+    const bearerToken = req.headers.authorization;
 
     // runs python script
     const python_process = spawner("python", [`${PYTHON_FILE}`, `${MODEL}`, `${IMAGE_FILE}/${fileName}`])
@@ -84,25 +86,27 @@ router.post("/image", upload.single('file'), async (req, res) => {
         }
         else{
             res.status(200).send(result);
-            result["result"].map((ele) => {
+            result["result"].map(async (ele) => {
+
+                const usersHostpitalId = await getHospitalIdFromToken(bearerToken);
+
                 const waste = {
                     waste_name: ele.item,
                     date: new Date().toISOString(),
                     possibility: ele.prob,
-                    hospital_id: 1, // TODO : Get hospital_id from request
+                    hospital_id: usersHostpitalId, // TODO : Get hospital_id from request
                 }
-                // Waste.create(waste)
-                //         .then(() => {
-                //             console.log("Saved to db!");
-                //         })
-                //         .catch((err) => {
-                //             console.log("Error while saving to db");
-                //         })
+                Waste.create(waste)
+                        .then(() => {
+                            console.log("Saved to db!");
+                        })
+                        .catch((err) => {
+                            console.log("Error while saving to db");
+                        })
                         
             })
-            console.log("Success ....")
+            console.log("Successfully send response")
         }
-        console.log("Finished !");
     })
     fileName = null;
 

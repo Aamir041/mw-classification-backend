@@ -12,9 +12,10 @@ const swaggerSpec = swaggerJSDOc(swaggerOptions);
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const User = require("./models/dbConn").user;
+const {SECRET_KEY} = require("./constants/constants");
 
 app.use(cors());
-app.use("/api-docs",swaggerUi.serve,swaggerUi.setup(swaggerSpec));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.json());
 
 const PORT = 8080;
@@ -25,20 +26,20 @@ app.use("/users",users)
 
 const opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = "mwapp";
+opts.secretOrKey = SECRET_KEY;
 
 passport.use(
-    new JwtStrategy(opts, function(jwt_payload, done) {
-        User.findOne({id:jwt_payload.identifier}, function(err, user) {
-            if(err){
-                return done(err,false);
-            }
-            if(user){
-                return (null, user);
-            } else{
-                return(null, false);
-            }
-        })
+    new JwtStrategy(opts, async function (jwt_payload, done) {
+        const user = User.findOne({ where: { id: jwt_payload.identifier.id } });
+
+        // If user exists then login
+        if (user) {
+            return done(null, user);
+        } 
+        // else send unauthorized 
+        else {
+            return done(null, false);
+        }
     })
 );
 
@@ -57,7 +58,7 @@ passport.use(
  */
 
 app.get("/",async (req,res)=>{
-    res.send("Hi");
+    res.send("I am groot.");
 })
 
 app.listen(PORT, () => {

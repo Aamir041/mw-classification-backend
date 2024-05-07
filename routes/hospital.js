@@ -21,7 +21,7 @@ router.post("/create", async (req, res) => {
     if (isHospitalPresent > 0) {
         const hospitalExistRes = {
             message: "Hospital name already exists!",
-            status: "error"
+            status: 400 
         }
         res.status(400).send(hospitalExistRes)
     }

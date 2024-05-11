@@ -30,7 +30,7 @@ opts.secretOrKey = SECRET_KEY;
 
 passport.use(
     new JwtStrategy(opts, async function (jwt_payload, done) {
-        const user = User.findOne({ where: { id: jwt_payload.identifier.id } });
+        const user = await User.findOne({ where: { id: jwt_payload.identifier.id } });
 
         // If user exists then login
         if (user) {

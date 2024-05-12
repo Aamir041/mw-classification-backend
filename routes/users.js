@@ -18,6 +18,83 @@ const {
     PASSWORD_CANNOT_BE_NULL
 } = require("../constants/constants");
 
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     SignUpUser:
+ *       type: object
+ *       required:
+ *         - username
+ *         - password
+ *         - hospital_id
+ *       properties:
+ *         username:
+ *           type: string
+ *           description: The auto-generated id of the book
+ *         password:
+ *           type: string
+ *           description: The title of your book
+ *         hospital_id:
+ *           type: number
+ *           description: The book author
+ *       example:
+ *         username: aamir
+ *         password: aamir@123
+ *         hospital_id: 1
+ *     LoginUser:
+ *       type: object
+ *       required:
+ *         - username
+ *         - password
+ *       properties:
+ *         username:
+ *           type: string
+ *           description: The auto-generated id of the book
+ *         password:
+ *           type: string
+ *           description: The title of your book
+ *       example:
+ *         username: aamir
+ *         password: aamir@123
+ */
+
+/**
+ * @swagger
+ * /users/signup:
+ *  post:
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/SignUpUser'
+ *      responses:
+ *          200:
+ *              description: Successful Signup
+ *              content:
+ *                  application/json:
+ *                      example:
+ *                          id: 22
+ *                          username: "maryam"
+ *                          hospital_id: 10
+ *                          token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjp7ImlkIjoyMiwidXNlcm5hbWUiOiJtYXJ5YW0iLCJob3NwaXRhbF9pZCI6MTB9LCJpYXQiOjE3MTU0NDY0MzV9.WOpw-o-1DRZpL0gdbT-X5clwmbb25TEDMcYDKG8XjVc"
+ *          400:
+ *              description: When user already exsists
+ *              content:
+ *                  application/json:
+ *                      example:
+ *                          message: "User already exists"
+ *                          status: 400
+*          404:
+ *              description: When Hospital does not exists
+ *              content:
+ *                  application/json:
+ *                      example:
+ *                          message: "Hospital does not exists"
+ *                          status: 404
+ */
+
 router.post("/signup", async (req, res) => {
 
     const { username, password, hospital_id } = req.body;
@@ -77,7 +154,49 @@ router.post("/signup", async (req, res) => {
         // send user info after saving
         res.status(201).json(userToReturn)
     }
-})
+});
+
+/**
+ * @swagger
+ * /users/login:
+ *  post:
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/LoginUser'
+ *      responses:
+ *          200:
+ *              description: Successful Signup
+ *              content:
+ *                  application/json:
+ *                      example:
+ *                          id: 22
+ *                          username: "maryam"
+ *                          hospital_id: 10
+ *                          token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjp7ImlkIjoyMiwidXNlcm5hbWUiOiJtYXJ5YW0iLCJob3NwaXRhbF9pZCI6MTB9LCJpYXQiOjE3MTU0NDY0MzV9.WOpw-o-1DRZpL0gdbT-X5clwmbb25TEDMcYDKG8XjVc"
+ *          401:
+ *              description: When wrong password
+ *              content:
+ *                  application/json:
+ *                      example:
+ *                          message: "User wrong password"
+ *                          status: 401
+ *          400:
+ *              description: "Username cannot be null"
+ *              content:
+ *                  application/json:
+ *                      example:
+ *                          message: "Username cannot be null / Password cannot null" 
+ *                          status: 400 
+ *          404:
+ *              description: User not found
+ *              content:
+ *                  application/json:
+ *                      example:
+ *                          message: "User not found"
+ *                          status: 404
+ */
 
 router.post("/login", async (req, res) => {
     const { username, password } = req.body;

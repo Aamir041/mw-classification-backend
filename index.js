@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const classify = require("./routes/classify");
 const hospital = require("./routes/hospital");
+const report = require("./routes/report");
 const users = require("./routes/users");
 const cors = require("cors");
 const swaggerJSDOc = require("swagger-jsdoc");
@@ -22,7 +23,8 @@ const PORT = 8080;
 
 app.use("/classify",classify);
 app.use("/hospital",hospital);
-app.use("/users",users)
+app.use("/users",users);
+app.use("/report", report);
 
 const opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();

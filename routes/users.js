@@ -224,6 +224,7 @@ router.post("/login", async (req, res) => {
         );
     }
     catch(error){
+        console.error(error);
         console.log("Error while getting user");
         res.status(500).send();
         return;
